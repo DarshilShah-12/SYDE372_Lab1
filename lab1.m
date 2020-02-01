@@ -14,7 +14,6 @@ Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
 figure(1)
-title("Classes A and B");
 hold on
 scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
 plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
@@ -23,7 +22,6 @@ plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
 hold off
 
 figure(2)
-title("Classes C, D, and E")
 hold on
 scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
 plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
@@ -32,7 +30,6 @@ plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
 scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
 hold off
-
 
 
 function Class = data(n, u, cov)
@@ -69,9 +66,15 @@ end
 
 
 
-
 %%KNN
-%%Use KNN(5,p1)
+
+function ab = K5NN_AB(p1)
+    [ab,~] = KNN(5,p1)
+end
+
+function cde = K5NN_CDE(p1)
+    [~,cde] = KNN(5,p1)
+end
 
 function minPoints = Points(k,p1,class)
     [~,minPoints] = kmin(k,p1,class);
@@ -118,19 +121,10 @@ function eucDi = euclidDist(p1,p2)
 end
 
 %%NN
-function KNN(1,p1)= NN(p1)
+function ab = NN_AB(p1)
+    [ab,~] = KNN(1,p1)
 end
 
-
-
-
-
-
-
-function output = boundary(classifier, start, finish)
-    x = linspace(start(1), finish(1), 100);
-    y = linspace(start(2), finish(2), 100);
-    [X, Y] = meshgrid(x,y);
-    A = arrayfun(classifier, X, Y);
-    contour(X, Y, A, 1.5);
+function cde = NN_CDE(p1)
+    [~,cde] = KNN(5,p1)
 end
