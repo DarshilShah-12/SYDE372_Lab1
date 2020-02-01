@@ -1,5 +1,3 @@
-clear
-
 clf(figure(1))
 clf(figure(2))
 
@@ -43,6 +41,7 @@ hold on
 scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
 scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
 boundary(@map1, [-15, 0], [35, 30]);
+boundary(@MED1, [-15, 0], [35, 30]);
 hold off
 
 figure(4)
@@ -66,11 +65,44 @@ function contour = std_cont(u, cov)
     contour = bsxfun(@plus, centered_contour, u);
 end
 
-%%MED
-
 
 %%MED
+function x = MED1(x1, x2)
+    % x = MED1(8, 13)
+    uA = [5; 10];
+	uB = [10; 15];
+    
+    d1 = norm([x1;x2]-uA);
+    d2 = norm([x1;x2]-uB);
+    
+    if d1 < d2
+        x = 1;
+    else
+        x = 2;
+    end
+end
 
+function x = MED2(x1, x2)
+    % x = MED2(8, 13)
+    uC = [5; 10];
+	uD = [15; 10];
+    uE = [10; 5];
+    
+    d1 = norm([x1;x2]-uC);
+    d2 = norm([x1;x2]-uD);
+    d3 = norm([x1;x2]-uE);
+
+    if d1 < d2 
+        x = 1;
+        if d1 < d3
+        x = d1;
+        end
+    elseif d2 < d3
+        x = 2;
+    else
+        x = 3;
+    end
+end
 
 
 %%GED
