@@ -1,5 +1,7 @@
 clear
 
+mean_arg = [5; 10];
+variance_arg = [8 0; 0, 4];
 
 Class_A = data(200, [5; 10], [8, 0; 0, 4]);
 Class_B = data(200, [10; 15], [8, 0; 0, 4]);
@@ -31,7 +33,6 @@ scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
 hold off
 
-
 function Class = data(n, u, cov)
    x = randn(2, n);
    x = cov * x;
@@ -45,3 +46,46 @@ function contour = std_cont(u, cov)
     contour = bsxfun(@plus, centered_contour, u);
 end
 
+function MAP_classifier_case1 = map1(x1, x2)
+    mu_a = [5; 10];
+    sigma_a = [8, 0; 0, 4];
+    
+    mu_b = [10; 15];
+    sigma_b = [8, 0; 0, 4];
+
+    x = [x1; x2];
+    
+    p_x_given_a = (1/(sqrt(2*pi)*sqrt(det(sigma_a))))*exp(((-1/2)*(x-mu_a).^2)/det(sigma_a));
+    p_x_given_b = (1/(sqrt(2*pi)*sqrt(det(sigma_b))))*exp(((-1/2)*(x-mu_b).^2)/det(sigma_b));
+    
+    if(p_x_given_a >= p_x_given_b)
+        MAP_classifier_case_1 = 1;
+    elseif(p_x_given_a < p_x_given_b)
+        MAP_classifier_case_1 = 2;
+    end
+end
+
+function MAP_classifier_case2 = map2(x1, x2)
+    mu_c = [5; 10];
+    sigma_c = [8, 4; 4, 40];
+    
+    mu_d = [15; 10];
+    sigma_d = [8, 0; 0, 8];
+    
+    mu_e = [10; 5];
+    sigma_e = [10, -5; -5, 20];
+    
+    x = [x1; x2];
+    
+    p_x_given_c = (1/(sqrt(2*pi)*sqrt(det(sigma_c))))*exp(((-1/2)*(x-mu_c).^2)/det(sigma_c));
+    p_x_given_d = (1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp(((-1/2)*(x-mu_d).^2)/det(sigma_d));
+    p_x_given_e = (1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp(((-1/2)*(x-mu_e).^2)/det(sigma_e));
+    
+    if(p_x_given_c >= p_x_given_d && p_x_given_c >= p_x_given_e)
+        MAP_classifier_case_2 = 3;
+    elseif(p_x_given_d >= p_x_given_c && p_x_given_d >= p_x_given_e)
+        MAP_classifier_case_2 = 4;
+    elseif(p_x_given_e >= p_x_given_c && p_x_given_e >= p_x_given_d)
+        MAP_classifier_case_2 = 5;
+    end
+end
