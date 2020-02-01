@@ -16,6 +16,7 @@ Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
 figure(1)
+title("Classes A and B");
 hold on
 scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
 plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
@@ -24,6 +25,7 @@ plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
 hold off
 
 figure(2)
+title("Classes C, D, and E")
 hold on
 scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
 plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
@@ -45,6 +47,25 @@ function contour = std_cont(u, cov)
     centered_contour = cov * unit_centered_contour;
     contour = bsxfun(@plus, centered_contour, u);
 end
+
+%%MED
+
+
+%%MED
+
+
+
+%%GED
+
+
+%%GED
+
+
+
+%%MAP
+
+
+%%MAP
 
 function MAP_classifier_case1 = map1(x1, x2)
     mu_a = [5; 10];
@@ -89,3 +110,19 @@ function MAP_classifier_case2 = map2(x1, x2)
         MAP_classifier_case_2 = 5;
     end
 end
+
+
+%%KNN
+
+
+%KNN
+
+
+function output = boundary(classifier, start, finish)
+    x = linspace(start(1), finish(1), 100);
+    y = linspace(start(2), finish(2), 100);
+    [X, Y] = meshgrid(x,y);
+    A = arrayfun(classifier, X, Y);
+    contour(X, Y, A, 1.5);
+end
+
