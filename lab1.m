@@ -159,9 +159,57 @@ end
 
 
 %%KNN
+%%Use KNN(5,p1)
+
+function minPoints = Points(k,p1,class)
+    [~,minPoints] = kmin(k,p1,class);
+end
+
+function [ab,cde] = KNN(k,p1)
+    [ADist, ~] = kmin(k,p1,Class_A);
+    [BDist, ~] = kmin(k,p1,Class_B);
+    [CDist, ~] = kmin(k,p1,Class_C);
+    [DDist, ~] = kmin(k,p1,Class_D);
+    [EDist, ~] = kmin(k,p1,Class_E);
+    arr1=[sum(ADist), sum(BDist)];
+    arr2=[sum(CDist),sum(DDist),sum(EDist)];
+
+    [~,I1] = min(arr1);
+    ab = I1;
+    [~,I2] = min(arr2);
+    cde = I2;
+end
+
+function [minDist, minPoints] = kmin(k, p1, Dataset)
+    minDist = intmax*ones(length(k),1);
+    minPoints = zeros(length(k),1);
+
+    for i = 1:size(Dataset,2)
+        m = Dataset(:,i);
+        newDist = euclidDist(p1,m);
+        if newDist<minDist(k)
+            n=k-1;
+            while newDist<minDist(n) && n>0
+                minDist(n+1)=minDist(n);
+                minPoints(n+1)=minPoints(n);
+                n=n-1;
+            end
+            minDist(n+1) = newDist;
+            minPoints(n+1) = i;
+
+           end
+    end
+end
+
+function eucDi = euclidDist(p1,p2)
+	eucDi = sqrt((p1(1)-p2(1))^2+(p1(2)-p2(2))^2);
+end
+
+%%NN
+function KNN(1,p1)= NN(p1)
+end
 
 
-%KNN
 
 
 function output = boundary(classifier, start, finish)
