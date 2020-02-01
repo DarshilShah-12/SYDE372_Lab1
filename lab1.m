@@ -106,10 +106,67 @@ end
 
 
 %%GED
-
+function gemClassification = gemClassAB(x1, x2)
+    sample = [x1; x2];
+    
+    %find distance A.    
+    a_cov = [8, 0; 0, 4];
+    a_u = [5; 10];
+    distance_A = transpose(sample - a_u) * inv(a_cov) * (sample - a_u);
+    
+    %find distance B.
+    b_cov = [8, 0; 0, 4];
+    b_u = [10; 15];
+    distance_B = transpose(sample - b_u) * inv(b_cov) * (sample - b_u);
+   
+    %Compare distances & classify.    
+    if(distance_A < distance_B)
+        determinedClass = 1;
+    end
+    if (distance_A > distance_B)
+        determinedClass = 2;
+    end
+    if (distance_A == distance_B)
+        determinedClass = 0;
+    end
+    gemClassification = determinedClass;
+end
 
 %%GED
+function gemClassification = gemClassCDE(x1, x2)
+    sample = [x1; x2];
+    
+    %find distance C.
+    c_cov = [8, 4; 4, 40];
+    c_u  = [5; 10];
+    distance_C = transpose(sample - c_u) * inv(c_cov) * (sample - c_u);
 
+    %find distance D.
+    d_cov = [8, 0; 0, 8];
+    d_u  = [15; 10];
+    distance_D = transpose(sample - d_u) * inv(d_cov) * (sample - d_u);
+    
+    %find distance E.
+    e_cov = [10, -5; -5, 20];
+    e_u  = [10; 5];
+    distance_E = transpose(sample - e_u) * inv(e_cov) * (sample - e_u);
+   
+    %Compare distances & classify.
+    distances = [distance_C, distance_D, distance_E];
+    if distance_C == min(distances)
+        gemClassification = 1;
+        return;
+    end
+    if distance_D == min(distances)
+        gemClassification = 2;
+        return;
+    end
+    if distance_E == min(distances)
+        gemClassification = 3;
+        return;
+    end
+    
+end
 
 
 %%MAP
@@ -163,9 +220,57 @@ end
 
 
 %%KNN
+%%Use KNN(5,p1)
+
+function minPoints = Points(k,p1,class)
+    [~,minPoints] = kmin(k,p1,class);
+end
+
+function [ab,cde] = KNN(k,p1)
+    [ADist, ~] = kmin(k,p1,Class_A);
+    [BDist, ~] = kmin(k,p1,Class_B);
+    [CDist, ~] = kmin(k,p1,Class_C);
+    [DDist, ~] = kmin(k,p1,Class_D);
+    [EDist, ~] = kmin(k,p1,Class_E);
+    arr1=[sum(ADist), sum(BDist)];
+    arr2=[sum(CDist),sum(DDist),sum(EDist)];
+
+    [~,I1] = min(arr1);
+    ab = I1;
+    [~,I2] = min(arr2);
+    cde = I2;
+end
+
+function [minDist, minPoints] = kmin(k, p1, Dataset)
+    minDist = intmax*ones(length(k),1);
+    minPoints = zeros(length(k),1);
+
+    for i = 1:size(Dataset,2)
+        m = Dataset(:,i);
+        newDist = euclidDist(p1,m);
+        if newDist<minDist(k)
+            n=k-1;
+            while newDist<minDist(n) && n>0
+                minDist(n+1)=minDist(n);
+                minPoints(n+1)=minPoints(n);
+                n=n-1;
+            end
+            minDist(n+1) = newDist;
+            minPoints(n+1) = i;
+
+           end
+    end
+end
+
+function eucDi = euclidDist(p1,p2)
+	eucDi = sqrt((p1(1)-p2(1))^2+(p1(2)-p2(2))^2);
+end
+
+%%NN
+function KNN(1,p1)= NN(p1)
+end
 
 
-%KNN
 
 
 function output = boundary(classifier, start, finish)
