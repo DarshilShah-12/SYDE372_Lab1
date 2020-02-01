@@ -171,9 +171,6 @@ end
 
 %%MAP
 
-
-%%MAP
-
 function MAP_classifier_case_1 = map1(x1, x2)
     mu_a = [5; 10];
     sigma_a = [8, 0; 0, 4];
