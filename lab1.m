@@ -57,6 +57,7 @@ hold off
 % dcm(Class_E, @map2, 5);
 
 dcm(Class_A, Class_B, @map1);
+dcm2(Class_C, Class_D, Class_E, @map2);
 
 function Class = data(n, u, cov)
    x = randn(2, n);
@@ -301,6 +302,42 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
     
     for i=1:size(class_b, 2)
         all_predicted_values(200 + i) = classifier(class_b(1, i), class_b(2, i));
+    end
+    
+    C = confusionmat(all_expected_values, all_predicted_values);
+    
+    disp(C);
+    
+%     correct_count = 0;
+%     for i=1:size(class, 2)
+%         if(classifier(class(1, i), class(2, i)) == expected_value)
+%             correct_count = correct_count + 1;
+%         end
+%     end
+%     disp(correct_count);
+%     developConfusionMatrix = correct_count;
+end
+
+function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
+    
+    expected_values_for_c = ones(1, 100)*3;
+    expected_values_for_d = ones(1, 200)*4;
+    expected_values_for_e = ones(1, 150)*5;
+    
+    all_expected_values = [expected_values_for_c, expected_values_for_d, expected_values_for_e];
+    
+    disp(all_expected_values);
+    all_predicted_values = zeros(1, 450);
+    for i=1:size(class_c, 2)
+        all_predicted_values(i) = classifier(class_c(1, i), class_c(2, i));
+    end
+    
+    for i=1:size(class_d, 2)
+        all_predicted_values(100 + i) = classifier(class_d(1, i), class_d(2, i));
+    end
+    
+    for i=1:size(class_e, 2)
+        all_predicted_values(300 + i) = classifier(class_e(1, i), class_e(2, i));
     end
     
     C = confusionmat(all_expected_values, all_predicted_values);
