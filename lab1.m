@@ -52,6 +52,12 @@ scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 boundary(@map2, [-25, -80], [45, 120]);
 hold off
 
+dcm(Class_A, @map1, 1);
+dcm(Class_B, @map1, 2);
+dcm(Class_C, @map2, 3);
+dcm(Class_D, @map2, 4);
+dcm(Class_E, @map2, 5);
+
 function Class = data(n, u, cov)
    x = randn(2, n);
    x = cov * x;
@@ -180,10 +186,10 @@ function MAP_classifier_case_1 = map1(x1, x2)
 
     x = [x1; x2];
     
-    p_x_given_a = (1/(sqrt(2*pi)*sqrt(det(sigma_a))))*exp((-1/2)*(transpose(x-mu_a)*inv(sigma_a))*(x-mu_a));
-    p_x_given_b = (1/(sqrt(2*pi)*sqrt(det(sigma_b))))*exp((-1/2)*(transpose(x-mu_b)*inv(sigma_b))*(x-mu_b));
+    p_x_given_a_and_p_a = ((1/(sqrt(2*pi)*sqrt(det(sigma_a))))*exp((-1/2)*(transpose(x-mu_a)*inv(sigma_a))*(x-mu_a)))*200;
+    p_x_given_b_and_p_b = ((1/(sqrt(2*pi)*sqrt(det(sigma_b))))*exp((-1/2)*(transpose(x-mu_b)*inv(sigma_b))*(x-mu_b)))*200;
     
-    if(p_x_given_a >= p_x_given_b)
+    if(p_x_given_a_and_p_a >= p_x_given_b_and_p_b)
         MAP_classifier_case_1 = 1;
     else
         MAP_classifier_case_1 = 2;
@@ -202,9 +208,9 @@ function MAP_classifier_case_2 = map2(x1, x2)
     
     x = [x1; x2];
     
-    p_x_given_c = (1/(sqrt(2*pi)*sqrt(det(sigma_c))))*exp((-1/2)*(transpose(x-mu_c)*inv(sigma_c))*(x-mu_c));
-    p_x_given_d = (1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d));
-    p_x_given_e = (1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e));
+    p_x_given_c = ((1/(sqrt(2*pi)*sqrt(det(sigma_c))))*exp((-1/2)*(transpose(x-mu_c)*inv(sigma_c))*(x-mu_c)))*100;
+    p_x_given_d = ((1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d)))*200;
+    p_x_given_e = ((1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e)))*150;
     
     if((p_x_given_c >= p_x_given_d) & (p_x_given_c >= p_x_given_e))
         MAP_classifier_case_2 = 3;
@@ -263,12 +269,16 @@ function eucDi = euclidDist(p1,p2)
 	eucDi = sqrt((p1(1)-p2(1))^2+(p1(2)-p2(2))^2);
 end
 
-%%NN
-function KNN(1,p1)= NN(p1)
+function developConfusionMatrix = dcm(class, classifier, expected_value)
+    correct_count = 0;
+    for i=1:size(class, 2)
+        if(classifier(class(1, i), class(2, i)) == expected_value)
+            correct_count = correct_count + 1;
+        end
+    end
+    disp(correct_count);
+    developConfusionMatrix = correct_count;
 end
-
-
-
 
 function output = boundary(classifier, start, finish)
     x = linspace(start(1), finish(1), 500);
