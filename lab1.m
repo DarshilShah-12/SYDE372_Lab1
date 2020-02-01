@@ -105,15 +105,18 @@ function x = MED2(x1, x2)
     d2 = norm([x1;x2]-uD);
     d3 = norm([x1;x2]-uE);
 
-    if d1 < d2 
-        x = 1;
-        if d1 < d3
-        x = d1;
+    if d1 < d2
+        if d1 < d3 %132
+            x = 1;
+        else %312
+            x = 3;
         end
-    elseif d2 < d3
-        x = 2;
     else
-        x = 3;
+        if d2 < d3 %213
+            x = 2;
+        else %321
+            x = 3;
+        end
     end
 end
 
@@ -242,6 +245,7 @@ function minPoints = Points(k,p1,class)
     [~,minPoints] = kmin(k,p1,class);
 end
 
+<<<<<<< HEAD
 function [ab,cde] = KNN(k,p1)
     [ADist, ~] = kmin(k,p1,Class_A);
     [BDist, ~] = kmin(k,p1,Class_B);
@@ -292,6 +296,53 @@ function cde = NN_CDE(p1)
     [~,cde] = KNN(5,p1)
 end
 
+=======
+%%Use KNN(5,p1)
+
+function minPoints = Points(k,p1,class)
+    [~,minPoints] = kmin(k,p1,class);
+end
+
+function [ab,cde] = KNN(k,p1)
+    [ADist, ~] = kmin(k,p1,Class_A);
+    [BDist, ~] = kmin(k,p1,Class_B);
+    [CDist, ~] = kmin(k,p1,Class_C);
+    [DDist, ~] = kmin(k,p1,Class_D);
+    [EDist, ~] = kmin(k,p1,Class_E);
+    arr1=[sum(ADist), sum(BDist)];
+    arr2=[sum(CDist),sum(DDist),sum(EDist)];
+
+    [~,I1] = min(arr1);
+    ab = I1;
+    [~,I2] = min(arr2);
+    cde = I2;
+end
+
+function [minDist, minPoints] = kmin(k, p1, Dataset)
+    minDist = intmax*ones(length(k),1);
+    minPoints = zeros(length(k),1);
+
+    for i = 1:size(Dataset,2)
+        m = Dataset(:,i);
+        newDist = euclidDist(p1,m);
+        if newDist<minDist(k)
+            n=k-1;
+            while newDist<minDist(n) && n>0
+                minDist(n+1)=minDist(n);
+                minPoints(n+1)=minPoints(n);
+                n=n-1;
+            end
+            minDist(n+1) = newDist;
+            minPoints(n+1) = i;
+
+           end
+    end
+end
+
+function eucDi = euclidDist(p1,p2)
+	eucDi = sqrt((p1(1)-p2(1))^2+(p1(2)-p2(2))^2);
+end
+>>>>>>> resolve conflict
 
 
 function output = boundary(classifier, start, finish)
@@ -302,3 +353,17 @@ function output = boundary(classifier, start, finish)
     contour(X, Y, A, 1.5);
 end
 
+<<<<<<< HEAD
+=======
+function output = classify(classifier, data)
+    for i = data(1)
+        for j = data(2)
+            output = arrayfun(classifier, i, j);
+        end
+    end
+end
+
+function err = errorRate(output)
+
+end
+>>>>>>> resolve conflict
