@@ -88,10 +88,67 @@ end
 
 
 %%GED
-
+function gemClassification = gemClassAB(x1, x2)
+    sample = [x1; x2];
+    
+    %find distance A.    
+    a_cov = [8, 0; 0, 4];
+    a_u = [5; 10];
+    distance_A = transpose(sample - a_u) * inv(a_cov) * (sample - a_u);
+    
+    %find distance B.
+    b_cov = [8, 0; 0, 4];
+    b_u = [10; 15];
+    distance_B = transpose(sample - b_u) * inv(b_cov) * (sample - b_u);
+   
+    %Compare distances & classify.    
+    if(distance_A < distance_B)
+        determinedClass = 1;
+    end
+    if (distance_A > distance_B)
+        determinedClass = 2;
+    end
+    if (distance_A == distance_B)
+        determinedClass = 0;
+    end
+    gemClassification = determinedClass;
+end
 
 %%GED
+function gemClassification = gemClassCDE(x1, x2)
+    sample = [x1; x2];
+    
+    %find distance C.
+    c_cov = [8, 4; 4, 40];
+    c_u  = [5; 10];
+    distance_C = transpose(sample - c_u) * inv(c_cov) * (sample - c_u);
 
+    %find distance D.
+    d_cov = [8, 0; 0, 8];
+    d_u  = [15; 10];
+    distance_D = transpose(sample - d_u) * inv(d_cov) * (sample - d_u);
+    
+    %find distance E.
+    e_cov = [10, -5; -5, 20];
+    e_u  = [10; 5];
+    distance_E = transpose(sample - e_u) * inv(e_cov) * (sample - e_u);
+   
+    %Compare distances & classify.
+    distances = [distance_C, distance_D, distance_E];
+    if distance_C == min(distances)
+        gemClassification = 1;
+        return;
+    end
+    if distance_D == min(distances)
+        gemClassification = 2;
+        return;
+    end
+    if distance_E == min(distances)
+        gemClassification = 3;
+        return;
+    end
+    
+end
 
 
 %%MAP
