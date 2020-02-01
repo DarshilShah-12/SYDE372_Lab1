@@ -1,11 +1,14 @@
-clf(figure(1))
-clf(figure(2))
+clear
+% clf(figure(1))
+% clf(figure(2))
 
 mean_arg = [5; 10];
 variance_arg = [8 0; 0, 4];
 
 Class_A = data(200, [5; 10], [8, 0; 0, 4]);
+Class_A_test = data(200, [5; 10], [8, 0; 0, 4]);
 Class_B = data(200, [10; 15], [8, 0; 0, 4]);
+Class_B_test = data(200, [10; 15], [8, 0; 0, 4]);
 Class_C = data(100, [5; 10], [8, 4; 4, 40;]);
 Class_D = data(200, [15; 10], [8, 0; 0, 8]);
 Class_E = data(150, [10; 5], [10, -5; -5, 20]);
@@ -16,7 +19,6 @@ Cont_C = std_cont([5; 10], [8, 4; 4, 40;]);
 Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
-<<<<<<< HEAD
 % figure(1)
 % title("Classes A and B");
 % hold on
@@ -26,45 +28,57 @@ Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 % plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
 % hold off
 % 
-=======
-figure(1)
-hold on
-scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
-scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
-hold off
+% figure(1)
+% hold on
+% scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
+% plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
+% scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+% plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
+% hold off
 
->>>>>>> emily
-figure(2)
-hold on
-scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
-plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
-scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
-plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
-scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
-plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
-hold off
+% figure(2)
+% hold on
+% scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
+% plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
+% scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
+% plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
+% scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
+% plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
+% hold off
 
-figure(3)
-hold on
-scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-boundary(@map1, [-15, 0], [35, 30]);
-boundary(@MED1, [-15, 0], [35, 30]);
-hold off
+% figure(3)
+% hold on
+% scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
+% scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+% boundary(@map1, [-15, 0], [35, 30]);
+% boundary(@MED1, [-15, 0], [35, 30]);
+% hold off
 
-<<<<<<< HEAD
-figure(4)
-hold on
-scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
-scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
-scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
-boundary(@map2, [-25, -80], [45, 120]);
-hold off
+% figure(4)
+% hold on
+% scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
+% scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
+% scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
+% boundary(@map2, [-25, -80], [45, 120]);
+% hold off
 
-=======
->>>>>>> emily
+med1 = classify(@MED1, Class_A);
+med1Err = errorRate(med1, length(Class_A(1,:)));
+med2 = classify(@MED2, Class_C);
+med2Err = errorRate(med2, length(Class_C(1,:)));
+gem1 = classify(@gemClassAB, Class_A);
+gem1Err = errorRate(gem1, length(Class_A(1,:)));
+gem2 = classify(@gemClassCDE, Class_C);
+gem2Err = errorRate(gem2, length(Class_C(1,:)));
+MAP1 = classify(@map1, Class_A);
+MAP1Err = errorRate(MAP1, length(Class_A(1,:)));
+MAP2 = classify(@map2, Class_C);
+MAP2Err = errorRate(MAP2, length(Class_C(1,:)));
+N1 = NNclassify(@NN_AB, Class_A_test);
+N1Err = errorRate(N1, length(Class_A_test(1,:)));
+disp(N1Err)
+% disp(K2Err)
+
 function Class = data(n, u, cov)
    x = randn(2, n);
    x = cov * x;
@@ -222,31 +236,36 @@ function MAP_classifier_case_2 = map2(x1, x2)
     p_x_given_d = (1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d));
     p_x_given_e = (1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e));
     
-    if((p_x_given_c >= p_x_given_d) & (p_x_given_c >= p_x_given_e))
-        MAP_classifier_case_2 = 3;
-    elseif((p_x_given_d >= p_x_given_c) & (p_x_given_d >= p_x_given_e))
-        MAP_classifier_case_2 = 4;
+    if((p_x_given_c >= p_x_given_d) && (p_x_given_c >= p_x_given_e))
+        MAP_classifier_case_2 = 1;
+    elseif((p_x_given_d >= p_x_given_c) && (p_x_given_d >= p_x_given_e))
+        MAP_classifier_case_2 = 2;
     else
-        MAP_classifier_case_2 = 5;
+        MAP_classifier_case_2 = 3;
     end
 end
 
 
 %%KNN
 function ab = K5NN_AB(p1)
-    [ab,~] = KNN(5,p1)
+    [ab,~] = KNN(5,p1);
 end
 
 function cde = K5NN_CDE(p1)
-    [~,cde] = KNN(5,p1)
+    [~,cde] = KNN(5,p1);
 end
 
 function minPoints = Points(k,p1,class)
     [~,minPoints] = kmin(k,p1,class);
 end
 
-<<<<<<< HEAD
 function [ab,cde] = KNN(k,p1)
+    Class_A = data(200, [5; 10], [8, 0; 0, 4]);
+    Class_B = data(200, [10; 15], [8, 0; 0, 4]);
+    Class_C = data(100, [5; 10], [8, 4; 4, 40;]);
+    Class_D = data(200, [15; 10], [8, 0; 0, 8]);
+    Class_E = data(150, [10; 5], [10, -5; -5, 20]);
+    
     [ADist, ~] = kmin(k,p1,Class_A);
     [BDist, ~] = kmin(k,p1,Class_B);
     [CDist, ~] = kmin(k,p1,Class_C);
@@ -289,60 +308,13 @@ end
 
 %%NN
 function ab = NN_AB(p1)
-    [ab,~] = KNN(1,p1)
+    [ab,~] = KNN(1,p1);
 end
 
 function cde = NN_CDE(p1)
-    [~,cde] = KNN(5,p1)
+    [~,cde] = KNN(5,p1);
 end
 
-=======
-%%Use KNN(5,p1)
-
-function minPoints = Points(k,p1,class)
-    [~,minPoints] = kmin(k,p1,class);
-end
-
-function [ab,cde] = KNN(k,p1)
-    [ADist, ~] = kmin(k,p1,Class_A);
-    [BDist, ~] = kmin(k,p1,Class_B);
-    [CDist, ~] = kmin(k,p1,Class_C);
-    [DDist, ~] = kmin(k,p1,Class_D);
-    [EDist, ~] = kmin(k,p1,Class_E);
-    arr1=[sum(ADist), sum(BDist)];
-    arr2=[sum(CDist),sum(DDist),sum(EDist)];
-
-    [~,I1] = min(arr1);
-    ab = I1;
-    [~,I2] = min(arr2);
-    cde = I2;
-end
-
-function [minDist, minPoints] = kmin(k, p1, Dataset)
-    minDist = intmax*ones(length(k),1);
-    minPoints = zeros(length(k),1);
-
-    for i = 1:size(Dataset,2)
-        m = Dataset(:,i);
-        newDist = euclidDist(p1,m);
-        if newDist<minDist(k)
-            n=k-1;
-            while newDist<minDist(n) && n>0
-                minDist(n+1)=minDist(n);
-                minPoints(n+1)=minPoints(n);
-                n=n-1;
-            end
-            minDist(n+1) = newDist;
-            minPoints(n+1) = i;
-
-           end
-    end
-end
-
-function eucDi = euclidDist(p1,p2)
-	eucDi = sqrt((p1(1)-p2(1))^2+(p1(2)-p2(2))^2);
-end
->>>>>>> resolve conflict
 
 
 function output = boundary(classifier, start, finish)
@@ -353,17 +325,27 @@ function output = boundary(classifier, start, finish)
     contour(X, Y, A, 1.5);
 end
 
-<<<<<<< HEAD
-=======
-function output = classify(classifier, data)
-    for i = data(1)
-        for j = data(2)
-            output = arrayfun(classifier, i, j);
+function hits = classify(classifier, data)
+    hits = 0;
+    for i = 1:length(data(1, :))
+        result = classifier(data(1,i), data(2,i));
+        if result == 1
+            hits = hits + 1;
         end
     end
 end
 
-function err = errorRate(output)
-
+function output = NNclassify(classifier, data)
+    output = 0;
+    for i = length(data(1,:))
+        p = [data(1,i); data(2,i)];
+        result = classifier(p);
+        disp(result)
+        if result == 1
+            hits = hits + 1;
+        end
+    end
 end
->>>>>>> resolve conflict
+function err = errorRate(result, expected)
+    err = (expected-result)/expected;
+end
