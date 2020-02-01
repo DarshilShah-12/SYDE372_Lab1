@@ -71,11 +71,13 @@ end
 
 
 %%KNN
-function minPoints = KNN(k,p1,class)
+%%Use KNN(5,p1)
+
+function minPoints = Points(k,p1,class)
     [~,minPoints] = kmin(k,p1,class);
 end
 
-function [ab,cde] = Classify(k,p1)
+function [ab,cde] = KNN(k,p1)
     [ADist, ~] = kmin(k,p1,Class_A);
     [BDist, ~] = kmin(k,p1,Class_B);
     [CDist, ~] = kmin(k,p1,Class_C);
