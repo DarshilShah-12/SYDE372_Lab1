@@ -273,6 +273,15 @@ function eucDi = euclidDist(p1,p2)
 	eucDi = sqrt((p1(1)-p2(1))^2+(p1(2)-p2(2))^2);
 end
 
+%%NN
+function ab = NN_AB(p1)
+    [ab,~] = KNN(1,p1)
+end
+
+function cde = NN_CDE(p1)
+    [~,cde] = KNN(5,p1)
+end
+
 function developConfusionMatrix = dcm(class, classifier, expected_value)
     correct_count = 0;
     for i=1:size(class, 2)
@@ -282,15 +291,6 @@ function developConfusionMatrix = dcm(class, classifier, expected_value)
     end
     disp(correct_count);
     developConfusionMatrix = correct_count;
-end
-
-%%NN
-function ab = NN_AB(p1)
-    [ab,~] = KNN(1,p1)
-end
-
-function cde = NN_CDE(p1)
-    [~,cde] = KNN(5,p1)
 end
 
 function output = boundary(classifier, start, finish)
