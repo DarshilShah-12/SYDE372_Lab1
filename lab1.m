@@ -289,10 +289,12 @@ function [minDist, minPoints] = kmin(k, p1, Dataset)
         newDist = euclidDist(p1,m);
         if newDist<minDist(k)
             n=k-1;
-            while newDist<minDist(n) && n>0
-                minDist(n+1)=minDist(n);
-                minPoints(n+1)=minPoints(n);
-                n=n-1;
+            if n>0
+                while newDist<minDist(n) 
+                    minDist(n+1)=minDist(n);
+                    minPoints(n+1)=minPoints(n);
+                    n=n-1;
+                end
             end
             minDist(n+1) = newDist;
             minPoints(n+1) = i;
@@ -311,7 +313,7 @@ function ab = NN_AB(p1)
 end
 
 function cde = NN_CDE(p1)
-    [~,cde] = KNN(5,p1);
+    [~,cde] = KNN(1,p1);
 end
 
 function developConfusionMatrix = dcm(class_a, class_b, classifier)
