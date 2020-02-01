@@ -1,11 +1,14 @@
-clf(figure(1))
-clf(figure(2))
+clear
+% clf(figure(1))
+% clf(figure(2))
 
 mean_arg = [5; 10];
 variance_arg = [8 0; 0, 4];
 
 Class_A = data(200, [5; 10], [8, 0; 0, 4]);
+Class_A_test = data(200, [5; 10], [8, 0; 0, 4]);
 Class_B = data(200, [10; 15], [8, 0; 0, 4]);
+Class_B_test = data(200, [10; 15], [8, 0; 0, 4]);
 Class_C = data(100, [5; 10], [8, 4; 4, 40;]);
 Class_D = data(200, [15; 10], [8, 0; 0, 8]);
 Class_E = data(150, [10; 5], [10, -5; -5, 20]);
@@ -59,6 +62,23 @@ hold off
 dcm(Class_A, Class_B, @map1);
 dcm2(Class_C, Class_D, Class_E, @map2);
 
+med1 = classify(@MED1, Class_A);
+med1Err = errorRate(med1, length(Class_A(1,:)));
+med2 = classify(@MED2, Class_C);
+med2Err = errorRate(med2, length(Class_C(1,:)));
+gem1 = classify(@gemClassAB, Class_A);
+gem1Err = errorRate(gem1, length(Class_A(1,:)));
+gem2 = classify(@gemClassCDE, Class_C);
+gem2Err = errorRate(gem2, length(Class_C(1,:)));
+MAP1 = classify(@map1, Class_A);
+MAP1Err = errorRate(MAP1, length(Class_A(1,:)));
+MAP2 = classify(@map2, Class_C);
+MAP2Err = errorRate(MAP2, length(Class_C(1,:)));
+N1 = NNclassify(@NN_AB, Class_A_test);
+N1Err = errorRate(N1, length(Class_A_test(1,:)));
+disp(N1Err)
+% disp(K2Err)
+
 function Class = data(n, u, cov)
    x = randn(2, n);
    x = cov * x;
@@ -99,15 +119,18 @@ function x = MED2(x1, x2)
     d2 = norm([x1;x2]-uD);
     d3 = norm([x1;x2]-uE);
 
-    if d1 < d2 
-        x = 1;
-        if d1 < d3
-        x = d1;
+    if d1 < d2
+        if d1 < d3 %132
+            x = 1;
+        else %312
+            x = 3;
         end
-    elseif d2 < d3
-        x = 2;
     else
-        x = 3;
+        if d2 < d3 %213
+            x = 2;
+        else %321
+            x = 3;
+        end
     end
 end
 
@@ -213,23 +236,23 @@ function MAP_classifier_case_2 = map2(x1, x2)
     p_x_given_d = ((1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d)))*200;
     p_x_given_e = ((1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e)))*150;
     
-    if((p_x_given_c >= p_x_given_d) & (p_x_given_c >= p_x_given_e))
-        MAP_classifier_case_2 = 3;
-    elseif((p_x_given_d >= p_x_given_c) & (p_x_given_d >= p_x_given_e))
-        MAP_classifier_case_2 = 4;
+    if((p_x_given_c >= p_x_given_d) && (p_x_given_c >= p_x_given_e))
+        MAP_classifier_case_2 = 1;
+    elseif((p_x_given_d >= p_x_given_c) && (p_x_given_d >= p_x_given_e))
+        MAP_classifier_case_2 = 2;
     else
-        MAP_classifier_case_2 = 5;
+        MAP_classifier_case_2 = 3;
     end
 end
 
 
 %%KNN
 function ab = K5NN_AB(p1)
-    [ab,~] = KNN(5,p1)
+    [ab,~] = KNN(5,p1);
 end
 
 function cde = K5NN_CDE(p1)
-    [~,cde] = KNN(5,p1)
+    [~,cde] = KNN(5,p1);
 end
 
 function minPoints = Points(k,p1,class)
@@ -237,6 +260,12 @@ function minPoints = Points(k,p1,class)
 end
 
 function [ab,cde] = KNN(k,p1)
+    Class_A = data(200, [5; 10], [8, 0; 0, 4]);
+    Class_B = data(200, [10; 15], [8, 0; 0, 4]);
+    Class_C = data(100, [5; 10], [8, 4; 4, 40;]);
+    Class_D = data(200, [15; 10], [8, 0; 0, 8]);
+    Class_E = data(150, [10; 5], [10, -5; -5, 20]);
+    
     [ADist, ~] = kmin(k,p1,Class_A);
     [BDist, ~] = kmin(k,p1,Class_B);
     [CDist, ~] = kmin(k,p1,Class_C);
@@ -278,11 +307,11 @@ end
 
 %%NN
 function ab = NN_AB(p1)
-    [ab,~] = KNN(1,p1)
+    [ab,~] = KNN(1,p1);
 end
 
 function cde = NN_CDE(p1)
-    [~,cde] = KNN(5,p1)
+    [~,cde] = KNN(5,p1);
 end
 
 function developConfusionMatrix = dcm(class_a, class_b, classifier)
@@ -354,6 +383,46 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
 %     developConfusionMatrix = correct_count;
 end
 
+function [ab,cde] = KNN(k,p1)
+    [ADist, ~] = kmin(k,p1,Class_A);
+    [BDist, ~] = kmin(k,p1,Class_B);
+    [CDist, ~] = kmin(k,p1,Class_C);
+    [DDist, ~] = kmin(k,p1,Class_D);
+    [EDist, ~] = kmin(k,p1,Class_E);
+    arr1=[sum(ADist), sum(BDist)];
+    arr2=[sum(CDist),sum(DDist),sum(EDist)];
+
+    [~,I1] = min(arr1);
+    ab = I1;
+    [~,I2] = min(arr2);
+    cde = I2;
+end
+
+function [minDist, minPoints] = kmin(k, p1, Dataset)
+    minDist = intmax*ones(length(k),1);
+    minPoints = zeros(length(k),1);
+
+    for i = 1:size(Dataset,2)
+        m = Dataset(:,i);
+        newDist = euclidDist(p1,m);
+        if newDist<minDist(k)
+            n=k-1;
+            while newDist<minDist(n) && n>0
+                minDist(n+1)=minDist(n);
+                minPoints(n+1)=minPoints(n);
+                n=n-1;
+            end
+            minDist(n+1) = newDist;
+            minPoints(n+1) = i;
+
+           end
+    end
+end
+
+function eucDi = euclidDist(p1,p2)
+	eucDi = sqrt((p1(1)-p2(1))^2+(p1(2)-p2(2))^2);
+end
+
 function output = boundary(classifier, start, finish)
     x = linspace(start(1), finish(1), 500);
     y = linspace(start(2), finish(2), 500);
@@ -362,3 +431,27 @@ function output = boundary(classifier, start, finish)
     contour(X, Y, A, 1.5);
 end
 
+function hits = classify(classifier, data)
+    hits = 0;
+    for i = 1:length(data(1, :))
+        result = classifier(data(1,i), data(2,i));
+        if result == 1
+            hits = hits + 1;
+        end
+    end
+end
+
+function hits = NNclassify(classifier, data)
+    hits = 0;
+    for i = length(data(1,:))
+        p = [data(1,i); data(2,i)];
+        result = classifier(p);
+        disp(result)
+        if result == 1
+            hits = hits + 1;
+        end
+    end
+end
+function err = errorRate(result, expected)
+    err = (expected-result)/expected;
+end
