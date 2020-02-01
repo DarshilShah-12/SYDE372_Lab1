@@ -50,11 +50,13 @@ scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 boundary(@map2, [-25, -80], [45, 120]);
 hold off
 
-dcm(Class_A, @map1, 1);
-dcm(Class_B, @map1, 2);
-dcm(Class_C, @map2, 3);
-dcm(Class_D, @map2, 4);
-dcm(Class_E, @map2, 5);
+% dcm(Class_A, @map1, 1);
+% dcm(Class_B, @map1, 2);
+% dcm(Class_C, @map2, 3);
+% dcm(Class_D, @map2, 4);
+% dcm(Class_E, @map2, 5);
+
+dcm(Class_A, Class_B, @map1);
 
 function Class = data(n, u, cov)
    x = randn(2, n);
@@ -282,15 +284,37 @@ function cde = NN_CDE(p1)
     [~,cde] = KNN(5,p1)
 end
 
-function developConfusionMatrix = dcm(class, classifier, expected_value)
-    correct_count = 0;
-    for i=1:size(class, 2)
-        if(classifier(class(1, i), class(2, i)) == expected_value)
-            correct_count = correct_count + 1;
-        end
+function developConfusionMatrix = dcm(class_a, class_b, classifier)
+    
+    expected_values_for_a = ones(1, 200);
+    expected_values_for_b = ones(1, 200)*2;
+    
+    all_expected_values = [expected_values_for_a, expected_values_for_b]
+    
+    
+    
+    disp(all_expected_values);
+    all_predicted_values = zeros(1, 400);
+    for i=1:size(class_a, 2)
+        all_predicted_values(i) = classifier(class_a(1, i), class_a(2, i));
     end
-    disp(correct_count);
-    developConfusionMatrix = correct_count;
+    
+    for i=1:size(class_b, 2)
+        all_predicted_values(200 + i) = classifier(class_b(1, i), class_b(2, i));
+    end
+    
+    C = confusionmat(all_expected_values, all_predicted_values);
+    
+    disp(C);
+    
+%     correct_count = 0;
+%     for i=1:size(class, 2)
+%         if(classifier(class(1, i), class(2, i)) == expected_value)
+%             correct_count = correct_count + 1;
+%         end
+%     end
+%     disp(correct_count);
+%     developConfusionMatrix = correct_count;
 end
 
 function output = boundary(classifier, start, finish)
