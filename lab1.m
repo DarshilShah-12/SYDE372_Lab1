@@ -1,4 +1,5 @@
-clear
+clf(figure(1))
+clf(figure(2))
 
 
 Class_A = data(200, [5; 10], [8, 0; 0, 4]);
@@ -47,8 +48,6 @@ function contour = std_cont(u, cov)
     centered_contour = cov * unit_centered_contour;
     contour = bsxfun(@plus, centered_contour, u);
 end
-
-%%MED
 
 
 %%MED
