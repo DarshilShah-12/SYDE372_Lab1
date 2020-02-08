@@ -8,8 +8,8 @@ variance_arg = [8 0; 0, 4];
 Class_A = data(200, [5; 10], [8, 0; 0, 4]);
 Class_A_test = data(200, [5; 10], [8, 0; 0, 4]);
 Class_B = data(200, [10; 15], [8, 0; 0, 4]);
-Class_B_test = data(200, [10; 15], [8, 0; 0, 4]);
-Class_C = data(100, [5; 10], [8, 4; 4, 40;]);
+Class_C = data(100, [5; 10], [8, 4; 4, 40]);
+Class_C_test = data(200, [5; 10], [8, 4; 4, 40]);
 Class_D = data(200, [15; 10], [8, 0; 0, 8]);
 Class_E = data(150, [10; 5], [10, -5; -5, 20]);
 
@@ -19,14 +19,14 @@ Cont_C = std_cont([5; 10], [8, 4; 4, 40;]);
 Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
-figure(1)
-hold on
-scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
-scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
-hold off
-
+% figure(1)
+% hold on
+% scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
+% plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
+% scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+% plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
+% hold off
+% 
 figure(2)
 hold on
 scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
@@ -53,14 +53,13 @@ scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 boundary(@map2, [-25, -80], [45, 120]);
 hold off
 
-% dcm(Class_A, @map1, 1);
-% dcm(Class_B, @map1, 2);
-% dcm(Class_C, @map2, 3);
-% dcm(Class_D, @map2, 4);
-% dcm(Class_E, @map2, 5);
+dcm(Class_A, @map1, 1);
+dcm(Class_B, @map1, 2);
+dcm(Class_C, @map2, 3);
+dcm(Class_D, @map2, 4);
+dcm(Class_E, @map2, 5);
 
 dcm(Class_A, Class_B, @map1);
-
 med1 = classify(@MED1, Class_A);
 med1Err = errorRate(med1, length(Class_A(1,:)));
 med2 = classify(@MED2, Class_C);
@@ -75,7 +74,14 @@ MAP2 = classify(@map2, Class_C);
 MAP2Err = errorRate(MAP2, length(Class_C(1,:)));
 N1 = NNclassify(@NN_AB, Class_A_test);
 N1Err = errorRate(N1, length(Class_A_test(1,:)));
-disp(N1Err)
+N2 = NNclassify(@NN_CDE, Class_C_test);
+N2Err = errorRate(N2, length(Class_C_test(1,:)));
+K1 = NNclassify(@K5NN_AB, Class_A_test);
+K1Err = errorRate(k1, length(Class_A_test(1,:)));
+
+disp('NN for multiclass error rate:')
+disp(N2Err)
+
 % disp(K2Err)
 
 function Class = data(n, u, cov)
@@ -320,9 +326,7 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
     expected_values_for_a = ones(1, 200);
     expected_values_for_b = ones(1, 200)*2;
     
-    all_expected_values = [expected_values_for_a, expected_values_for_b]
-    
-    
+    all_expected_values = [expected_values_for_a, expected_values_for_b];
     
     disp(all_expected_values);
     all_predicted_values = zeros(1, 400);
@@ -369,15 +373,15 @@ end
 
 function hits = NNclassify(classifier, data)
     hits = 0;
-    for i = length(data(1,:))
+    for i = 1:length(data(1,:))
         p = [data(1,i); data(2,i)];
         result = classifier(p);
-        disp(result)
         if result == 1
             hits = hits + 1;
         end
     end
 end
+
 function err = errorRate(result, expected)
     err = (expected-result)/expected;
 end
