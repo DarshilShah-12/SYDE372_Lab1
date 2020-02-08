@@ -2,6 +2,9 @@ clear
 clf(figure(1))
 clf(figure(2))
 clf(figure(3))
+clf(figure(4))
+clf(figure(5))
+clf(figure(6))
 
 mean_arg = [5; 10];
 variance_arg = [8 0; 0, 4];
@@ -62,8 +65,40 @@ title("Classes A and B NN");
 hold on
 scatter(Class_A(1, :), Class_A(2, :), 'x', 'red');
 scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+boundary(@NN_AB, [-5, 5], [20, 20], '-');
+hold off
+
+figure(4)
+% axis equal
+title("Classes A and B K5-NN");
+hold on
+scatter(Class_A(1, :), Class_A(2, :), 'x', 'red');
+scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
 boundary(@K5NN_AB, [-5, 5], [20, 20], '-');
 hold off
+
+figure(5)
+% axis equal
+title("Classes C, D, and E NN");
+hold on
+scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
+scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
+scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
+boundary(@NN_CDE, [-20, -5], [25, 25], '-');
+hold off
+
+figure(6)
+% axis equal
+title("Classes C, D, and E K5-NN");
+hold on
+scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
+scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
+scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
+boundary(@K5NN_CDE, [-20, -5], [25, 25], '-');
+hold off
+
+% figure(5)
+% boundary(@K5NN_CDE, [-20, -5], [25, 25], '-');
 
 
 % dcm(Class_A, @map1, 1);
@@ -428,11 +463,11 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
 end
 
 function boundary(classifier, start, finish, style)
-    x = linspace(start(1), finish(1), 100);
-    y = linspace(start(2), finish(2), 100);
+    x = linspace(start(1), finish(1), 1000);
+    y = linspace(start(2), finish(2), 1000);
     [X, Y] = meshgrid(x,y);
     A = arrayfun(classifier, X, Y);
-    contour(X, Y, A, [1, 2, 3, 4, 5], ['k', style]);
+    contour(X, Y, A, [1, 2, 3],['k', style]);
 end
 
 
