@@ -15,8 +15,8 @@ global Class_E
 Class_A = data(200, [5; 10], [8, 0; 0, 4]);
 Class_A_test = data(200, [5; 10], [8, 0; 0, 4]);
 Class_B = data(200, [10; 15], [8, 0; 0, 4]);
-Class_B_test = data(200, [10; 15], [8, 0; 0, 4]);
-Class_C = data(100, [5; 10], [8, 4; 4, 40;]);
+Class_C = data(100, [5; 10], [8, 4; 4, 40]);
+Class_C_test = data(200, [5; 10], [8, 4; 4, 40]);
 Class_D = data(200, [15; 10], [8, 0; 0, 8]);
 Class_E = data(150, [10; 5], [10, -5; -5, 20]);
 
@@ -72,6 +72,18 @@ hold off
 % dcm(Class_D, @map2, 4);
 % dcm(Class_E, @map2, 5);
 
+dcm(Class_A_test, Class_B, @MED1);
+dcm2(Class_C, Class_D, Class_E, @map2);
+
+dcm(Class_A_test, Class_B, @gemClassAB);
+dcm2(Class_C, Class_D, Class_E, @gemClassCDE);
+
+dcm(Class_A_test, Class_B, @MED1);
+dcm2(Class_C, Class_D, Class_E, @map2);
+
+dcm(Class_A_test, Class_B, @gemClassAB);
+dcm2(Class_C, Class_D, Class_E, @gemClassCDE);
+
 dcm(Class_A, Class_B, @map1);
 dcm2(Class_C, Class_D, Class_E, @map2);
 
@@ -89,7 +101,14 @@ MAP2 = classify(@map2, Class_C);
 MAP2Err = errorRate(MAP2, length(Class_C(1,:)));
 N1 = NNclassify(@NN_AB, Class_A_test);
 N1Err = errorRate(N1, length(Class_A_test(1,:)));
-disp(N1Err)
+N2 = NNclassify(@NN_CDE, Class_C_test);
+N2Err = errorRate(N2, length(Class_C_test(1,:)));
+K1 = NNclassify(@K5NN_AB, Class_A_test);
+K1Err = errorRate(k1, length(Class_A_test(1,:)));
+
+disp('NN for multiclass error rate:')
+disp(N2Err)
+
 % disp(K2Err)
 
 
@@ -332,11 +351,11 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
     expected_values_for_a = ones(1, 200);
     expected_values_for_b = ones(1, 200)*2;
     
-    all_expected_values = [expected_values_for_a, expected_values_for_b]
+    all_expected_values = [expected_values_for_a, expected_values_for_b];
     
     
     
-    disp(all_expected_values);
+%     disp(all_expected_values);
     all_predicted_values = zeros(1, 400);
     for i=1:size(class_a, 2)
         all_predicted_values(i) = classifier(class_a(1, i), class_a(2, i));
@@ -368,7 +387,7 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
     
     all_expected_values = [expected_values_for_c, expected_values_for_d, expected_values_for_e];
     
-    disp(all_expected_values);
+%     disp(all_expected_values);
     all_predicted_values = zeros(1, 450);
     for i=1:size(class_c, 2)
         all_predicted_values(i) = classifier(class_c(1, i), class_c(2, i));
@@ -384,6 +403,8 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
     
     C = confusionmat(all_expected_values, all_predicted_values);
     
+    C( all(~C,2), : ) = [];
+    C( :, all(~C, 1)) = [];
     disp(C);
     
 %     correct_count = 0;
@@ -417,15 +438,15 @@ end
 
 function hits = NNclassify(classifier, data)
     hits = 0;
-    for i = length(data(1,:))
+    for i = 1:length(data(1,:))
         p = [data(1,i); data(2,i)];
         result = classifier(p);
-        disp(result)
         if result == 1
             hits = hits + 1;
         end
     end
 end
+
 function err = errorRate(result, expected)
     err = (expected-result)/expected;
 end
