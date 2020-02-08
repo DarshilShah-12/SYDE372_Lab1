@@ -41,6 +41,8 @@ boundary(@MED1, [-15, 0], [35, 30], '-');
 boundary(@gemClassAB, [-15, 0], [35, 30], ':');
 boundary(@map1, [-15, 0], [35, 30], '--');
 legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
+xlabel('x1')
+ylabel('x2')
 hold off
 
 figure(2)
@@ -57,6 +59,8 @@ boundary(@MED2, [-25, -80], [45, 120], '-');
 boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
 boundary(@map2, [-25, -80], [45, 120], '--');
 legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
+xlabel('x1')
+ylabel('x2')
 hold off
 
 figure(3)
@@ -66,6 +70,8 @@ hold on
 scatter(Class_A(1, :), Class_A(2, :), 'x', 'red');
 scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
 boundary(@NN_AB, [-5, 5], [20, 20], '-');
+xlabel('x1')
+ylabel('x2')
 hold off
 
 figure(4)
@@ -75,6 +81,8 @@ hold on
 scatter(Class_A(1, :), Class_A(2, :), 'x', 'red');
 scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
 boundary(@K5NN_AB, [-5, 5], [20, 20], '-');
+xlabel('x1')
+ylabel('x2')
 hold off
 
 figure(5)
@@ -85,6 +93,8 @@ scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
 scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
 scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 boundary(@NN_CDE, [-20, -5], [25, 25], '-');
+xlabel('x1')
+ylabel('x2')
 hold off
 
 figure(6)
@@ -95,17 +105,9 @@ scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
 scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
 scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 boundary(@K5NN_CDE, [-20, -5], [25, 25], '-');
+xlabel('x1')
+ylabel('x2')
 hold off
-
-% figure(5)
-% boundary(@K5NN_CDE, [-20, -5], [25, 25], '-');
-
-
-% dcm(Class_A, @map1, 1);
-% dcm(Class_B, @map1, 2);
-% dcm(Class_C, @map2, 3);
-% dcm(Class_D, @map2, 4);
-% dcm(Class_E, @map2, 5);
 
 dcm(Class_A_test, Class_B, @MED1);
 dcm2(Class_C, Class_D, Class_E, @MED2);
@@ -123,29 +125,30 @@ dcm(Class_A_test, Class_B, @NN_AB);
 dcm2(Class_C_test, Class_D, Class_E, @NN_CDE);
 
 med1 = classify(@MED1, Class_A);
-med1Err = errorRate(med1, length(Class_A(1,:)));
+med1Err = errorRate("MED", "1", med1, length(Class_A(1,:)));
 med2 = classify(@MED2, Class_C);
-med2Err = errorRate(med2, length(Class_C(1,:)));
+med2Err = errorRate("MED", "2", med2, length(Class_C(1,:)));
 gem1 = classify(@gemClassAB, Class_A);
-gem1Err = errorRate(gem1, length(Class_A(1,:)));
+gem1Err = errorRate("GEM", "1", gem1, length(Class_A(1,:)));
 gem2 = classify(@gemClassCDE, Class_C);
-gem2Err = errorRate(gem2, length(Class_C(1,:)));
+gem2Err = errorRate("GEM", "2", gem2, length(Class_C(1,:)));
 MAP1 = classify(@map1, Class_A);
-MAP1Err = errorRate(MAP1, length(Class_A(1,:)));
+MAP1Err = errorRate("MAP", "1", MAP1, length(Class_A(1,:)));
 MAP2 = classify(@map2, Class_C);
-MAP2Err = errorRate(MAP2, length(Class_C(1,:)));
-N1 = NNclassify(@NN_AB, Class_A_test);
-N1Err = errorRate(N1, length(Class_A_test(1,:)));
+MAP2Err = errorRate("MAP", "2", MAP2, length(Class_C(1,:)));
 testing = NNclassify(@NN_AB, Class_A);
-testing2 = errorRate(testing, length(Class_A(1,:)));
-testing3 = NNclassify(@NN_AB, Class_A);
-testing4 = errorRate(testing3, length(Class_A(1,:)));
+testing2 = errorRate("NN training", "1", testing, length(Class_A(1,:)));
+testing3 = NNclassify(@NN_CDE, Class_C);
+testing4 = errorRate("NN training", "2", testing3, length(Class_C(1,:)));
+N1 = NNclassify(@NN_AB, Class_A_test);
+N1Err = errorRate("NN", "1", N1, length(Class_A_test(1,:)));
 N2 = NNclassify(@NN_CDE, Class_C_test);
-N2Err = errorRate(N2, length(Class_C_test(1,:)));
+N2Err = errorRate("NN", "2", N2, length(Class_C_test(1,:)));
 K1 = NNclassify(@K5NN_AB, Class_A_test);
-K1Err = errorRate(K1, length(Class_A_test(1,:)));
+K1Err = errorRate("5NN", "1", K1, length(Class_A_test(1,:)));
 K2 = NNclassify(@K5NN_CDE, Class_A_test);
-K2Err = errorRate(K2, length(Class_C_test(1,:)));
+K2Err = errorRate("5NN", "2", K2, length(Class_C_test(1,:)));
+
 
 function Class = data(n, u, cov)
    [V, D] = eig(cov);
@@ -270,7 +273,6 @@ end
 
 
 %%MAP
-
 function MAP_classifier_case_1 = map1(x1, x2)
     mu_a = [5; 10];
     sigma_a = [8, 0; 0, 4];
@@ -378,7 +380,6 @@ function eucDi = euclidDist(p1,p2)
 end
 
 %%NN
-
 function ab = NN_AB(x1, x2)
     p1 = [x1; x2];
     [ab,~] = KNN(1,p1);
@@ -396,9 +397,6 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
     
     all_expected_values = [expected_values_for_a, expected_values_for_b];
     
-    
-    
-%     disp(all_expected_values);
     all_predicted_values = zeros(1, 400);
     for i=1:size(class_a, 2)
         all_predicted_values(i) = classifier(class_a(1, i), class_a(2, i));
@@ -410,16 +408,8 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
     
     C = confusionmat(all_expected_values, all_predicted_values);
     
+    fprintf('Confusion matrix for classifier %s is \n', func2str(classifier));
     disp(C);
-    
-%     correct_count = 0;
-%     for i=1:size(class, 2)
-%         if(classifier(class(1, i), class(2, i)) == expected_value)
-%             correct_count = correct_count + 1;
-%         end
-%     end
-%     disp(correct_count);
-%     developConfusionMatrix = correct_count;
 end
 
 function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
@@ -430,7 +420,6 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
     
     all_expected_values = [expected_values_for_c, expected_values_for_d, expected_values_for_e];
     
-%     disp(all_expected_values);
     all_predicted_values = zeros(1, 450);
     for i=1:size(class_c, 2)
         all_predicted_values(i) = classifier(class_c(1, i), class_c(2, i));
@@ -448,16 +437,8 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
     
     C( all(~C,2), : ) = [];
     C( :, all(~C, 1)) = [];
+    fprintf('Confusion matrix for classifier %s is \n', func2str(classifier));
     disp(C);
-    
-%     correct_count = 0;
-%     for i=1:size(class, 2)
-%         if(classifier(class(1, i), class(2, i)) == expected_value)
-%             correct_count = correct_count + 1;
-%         end
-%     end
-%     disp(correct_count);
-%     developConfusionMatrix = correct_count;
 end
 
 function boundary(classifier, start, finish, style)
@@ -489,6 +470,7 @@ function hits = NNclassify(classifier, data)
     end
 end
 
-function err = errorRate(result, expected)
+function err = errorRate(name, caseNum, result, expected)
     err = (expected-result)/expected;
+    fprintf('Experimental error rate for %s case %s: %.2f%% \n', name, caseNum, err*100)
 end
