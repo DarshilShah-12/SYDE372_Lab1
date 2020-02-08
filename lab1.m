@@ -147,15 +147,6 @@ K1Err = errorRate(K1, length(Class_A_test(1,:)));
 K2 = NNclassify(@K5NN_CDE, Class_A_test);
 K2Err = errorRate(K2, length(Class_C_test(1,:)));
 
-% disp(testing2);
-% disp("blah");
-% disp(testing4);
-% disp("blah2");
-% disp(N1Err);
-% disp(N2Err);
-% disp(K1Err);
-% disp(K2Err);
-
 function Class = data(n, u, cov)
    [V, D] = eig(cov);
    x = randn(2, n);
@@ -347,13 +338,19 @@ function [ab,cde] = KNN(k,p1)
     global Class_D
     global Class_E
     
-    [ADist, ~] = kmin(k,p1,Class_A);
-    [BDist, ~] = kmin(k,p1,Class_B);
-    [CDist, ~] = kmin(k,p1,Class_C);
-    [DDist, ~] = kmin(k,p1,Class_D);
-    [EDist, ~] = kmin(k,p1,Class_E);
-    arr1=[sum(ADist), sum(BDist)];
-    arr2=[sum(CDist),sum(DDist),sum(EDist)];
+    [~, APoints] = kmin(k,p1,Class_A);
+    [~, BPoints] = kmin(k,p1,Class_B);
+    [~, CPoints] = kmin(k,p1,Class_C);
+    [~, DPoints] = kmin(k,p1,Class_D);
+    [~, EPoints] = kmin(k,p1,Class_E);
+    pA = [mean(APoints(1, :)); mean(APoints(2, :))];
+    pB = [mean(BPoints(1, :)); mean(BPoints(2, :))];
+    arr1 = [euclidDist(pA, p1), euclidDist(pB, p1)];
+    
+    pC = [mean(CPoints(1, :)); mean(CPoints(2, :))];
+    pD = [mean(DPoints(1, :)); mean(DPoints(2, :))];
+    pE = [mean(EPoints(1, :)); mean(EPoints(2, :))];
+    arr2 = [euclidDist(pC, p1), euclidDist(pD, p1), euclidDist(pE, p1)];
 
     [~,I1] = min(arr1);
     ab = I1;
@@ -363,7 +360,7 @@ end
 
 function [minDist, minPoints] = kmin(k, p1, Dataset)
     minDist = realmax*ones(k,1);
-    minPoints = zeros(length(k),1);
+    minPoints = zeros(2,k);
 
     for i = 1:size(Dataset,2)
         m = Dataset(:,i);
@@ -371,6 +368,7 @@ function [minDist, minPoints] = kmin(k, p1, Dataset)
         if newDist<max(minDist)
             [~,H] = max(minDist);
             minDist(H) = newDist;
+            minPoints(:, H) = m;
         end
     end
 end
