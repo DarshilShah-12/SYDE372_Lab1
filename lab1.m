@@ -51,11 +51,17 @@ legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
 hold off
 
 
-dcm(Class_A, @map1, 1);
-dcm(Class_B, @map1, 2);
-dcm(Class_C, @map2, 3);
-dcm(Class_D, @map2, 4);
-dcm(Class_E, @map2, 5);
+% dcm(Class_A, @map1, 1);
+% dcm(Class_B, @map1, 2);
+% dcm(Class_C, @map2, 3);
+% dcm(Class_D, @map2, 4);
+% dcm(Class_E, @map2, 5);
+
+dcm(Class_A_test, Class_B, @MED1);
+dcm2(Class_C, Class_D, Class_E, @map2);
+
+dcm(Class_A_test, Class_B, @gemClassAB);
+dcm2(Class_C, Class_D, Class_E, @gemClassCDE);
 
 dcm(Class_A_test, Class_B, @MED1);
 dcm2(Class_C, Class_D, Class_E, @map2);
@@ -336,9 +342,9 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
     expected_values_for_b = ones(1, 200)*2;
     
     all_expected_values = [expected_values_for_a, expected_values_for_b];
-
     
-
+    
+    
 %     disp(all_expected_values);
     all_predicted_values = zeros(1, 400);
     for i=1:size(class_a, 2)
