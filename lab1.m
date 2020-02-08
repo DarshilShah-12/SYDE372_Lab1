@@ -29,39 +29,39 @@ Cont_C = std_cont([5; 10], [8, 4; 4, 40;]);
 Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
-figure(1)
-axis equal
-title("Classes A and B");
-hold on
-scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
-scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
-boundary(@MED1, [-15, 0], [35, 30], '-');
-boundary(@gemClassAB, [-15, 0], [35, 30], ':');
-boundary(@map1, [-15, 0], [35, 30], '--');
-legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
-xlabel('x1')
-ylabel('x2')
-hold off
-
-figure(2)
+% figure(1)
 % axis equal
-title("Classes C, D, and E");
-hold on
-scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
-plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
-scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
-plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
-scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
-plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
-boundary(@MED2, [-25, -80], [45, 120], '-');
-boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
-boundary(@map2, [-25, -80], [45, 120], '--');
-legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
-xlabel('x1')
-ylabel('x2')
-hold off
+% title("Classes A and B");
+% hold on
+% scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
+% plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
+% scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+% plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
+% boundary(@MED1, [-15, 0], [35, 30], '-');
+% boundary(@gemClassAB, [-15, 0], [35, 30], ':');
+% boundary(@map1, [-15, 0], [35, 30], '--');
+% legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
+% xlabel('x1')
+% ylabel('x2')
+% hold off
+% 
+% figure(2)
+% % axis equal
+% title("Classes C, D, and E");
+% hold on
+% scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
+% plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
+% scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
+% plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
+% scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
+% plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
+% boundary(@MED2, [-25, -80], [45, 120], '-');
+% boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
+% boundary(@map2, [-25, -80], [45, 120], '--');
+% legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
+% xlabel('x1')
+% ylabel('x2')
+% hold off
 
 figure(3)
 % axis equal
@@ -70,6 +70,7 @@ hold on
 scatter(Class_A(1, :), Class_A(2, :), 'x', 'red');
 scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
 boundary(@NN_AB, [-5, 5], [20, 20], '-');
+legend('A', 'B', 'NN')
 xlabel('x1')
 ylabel('x2')
 hold off
@@ -81,7 +82,7 @@ hold on
 scatter(Class_A(1, :), Class_A(2, :), 'x', 'red');
 scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
 boundary(@K5NN_AB, [-5, 5], [20, 20], '-');
-xlabel('x1')
+legend('A', 'B', '5NN')
 ylabel('x2')
 hold off
 
@@ -93,6 +94,7 @@ scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
 scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
 scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 boundary(@NN_CDE, [-20, -5], [25, 25], '-');
+legend('C', 'D', 'E', 'NN')
 xlabel('x1')
 ylabel('x2')
 hold off
@@ -105,6 +107,7 @@ scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
 scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
 scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 boundary(@K5NN_CDE, [-20, -5], [25, 25], '-');
+legend('C', 'D', 'E', '5NN')
 xlabel('x1')
 ylabel('x2')
 hold off
