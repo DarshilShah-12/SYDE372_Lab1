@@ -441,7 +441,6 @@ end
 function hits = NNclassify(classifier, data)
     hits = 0;
     for i = 1:length(data(1,:))
-%         p = [data(1,i); data(2,i)];
         result = classifier(data(1,i), data(2,i));
         if result == 1
             hits = hits + 1;
