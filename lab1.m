@@ -104,13 +104,14 @@ N1Err = errorRate(N1, length(Class_A_test(1,:)));
 N2 = NNclassify(@NN_CDE, Class_C_test);
 N2Err = errorRate(N2, length(Class_C_test(1,:)));
 K1 = NNclassify(@K5NN_AB, Class_A_test);
-K1Err = errorRate(k1, length(Class_A_test(1,:)));
+K1Err = errorRate(K1, length(Class_A_test(1,:)));
+K2 = NNclassify(@K5NN_CDE, Class_A_test);
+K2Err = errorRate(K2, length(Class_C_test(1,:)));
 
-disp('NN for multiclass error rate:')
+disp(N1Err)
 disp(N2Err)
-
-% disp(K2Err)
-
+disp(K1Err)
+disp(K2Err)
 
 function Class = data(n, u, cov)
    [V, D] = eig(cov);
@@ -342,7 +343,8 @@ function ab = NN_AB(x1, x2)
     [ab,~] = KNN(1,p1);
 end
 
-function cde = NN_CDE(p1)
+function cde = NN_CDE(x1, x2)
+    p1 = [x1; x2];
     [~,cde] = KNN(1,p1);
 end
 
@@ -439,8 +441,8 @@ end
 function hits = NNclassify(classifier, data)
     hits = 0;
     for i = 1:length(data(1,:))
-        p = [data(1,i); data(2,i)];
-        result = classifier(p);
+%         p = [data(1,i); data(2,i)];
+        result = classifier(data(1,i), data(2,i));
         if result == 1
             hits = hits + 1;
         end
