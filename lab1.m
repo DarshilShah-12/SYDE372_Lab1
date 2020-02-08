@@ -104,7 +104,7 @@ N1Err = errorRate(N1, length(Class_A_test(1,:)));
 N2 = NNclassify(@NN_CDE, Class_C_test);
 N2Err = errorRate(N2, length(Class_C_test(1,:)));
 K1 = NNclassify(@K5NN_AB, Class_A_test);
-K1Err = errorRate(k1, length(Class_A_test(1,:)));
+K1Err = errorRate(K1, length(Class_A_test(1,:)));
 
 disp('NN for multiclass error rate:')
 disp(N2Err)
@@ -303,13 +303,19 @@ function [ab,cde] = KNN(k,p1)
     global Class_D
     global Class_E
     
-    [ADist, ~] = kmin(k,p1,Class_A);
-    [BDist, ~] = kmin(k,p1,Class_B);
-    [CDist, ~] = kmin(k,p1,Class_C);
-    [DDist, ~] = kmin(k,p1,Class_D);
-    [EDist, ~] = kmin(k,p1,Class_E);
-    arr1=[sum(ADist), sum(BDist)];
-    arr2=[sum(CDist),sum(DDist),sum(EDist)];
+    [~, APoints] = kmin(k,p1,Class_A);
+    [~, BPoints] = kmin(k,p1,Class_B);
+    [~, CPoints] = kmin(k,p1,Class_C);
+    [~, DPoints] = kmin(k,p1,Class_D);
+    [~, EPoints] = kmin(k,p1,Class_E);
+    pA = [mean(APoints(1, :)); mean(APoints(2, :))];
+    pB = [mean(BPoints(1, :)); mean(BPoints(2, :))];
+    arr1 = [euclidDist(pA, p1), euclidDist(pB, p1)];
+    
+    pC = [mean(CPoints(1, :)); mean(CPoints(2, :))];
+    pD = [mean(DPoints(1, :)); mean(DPoints(2, :))];
+    pE = [mean(EPoints(1, :)); mean(EPoints(2, :))];
+    arr2 = [euclidDist(pC, p1), euclidDist(pD, p1), euclidDist(pE, p1)];
 
     [~,I1] = min(arr1);
     ab = I1;
@@ -319,7 +325,7 @@ end
 
 function [minDist, minPoints] = kmin(k, p1, Dataset)
     minDist = realmax*ones(k,1);
-    minPoints = zeros(length(k),1);
+    minPoints = zeros(2,k);
 
     for i = 1:size(Dataset,2)
         m = Dataset(:,i);
@@ -327,6 +333,7 @@ function [minDist, minPoints] = kmin(k, p1, Dataset)
         if newDist<max(minDist)
             [~,H] = max(minDist);
             minDist(H) = newDist;
+            minPoints(:, H) = m;
         end
     end
 end
@@ -342,7 +349,8 @@ function ab = NN_AB(x1, x2)
     [ab,~] = KNN(1,p1);
 end
 
-function cde = NN_CDE(p1)
+function cde = NN_CDE(x1, x2)
+    p1 = [x1; x2];
     [~,cde] = KNN(1,p1);
 end
 
@@ -440,7 +448,7 @@ function hits = NNclassify(classifier, data)
     hits = 0;
     for i = 1:length(data(1,:))
         p = [data(1,i); data(2,i)];
-        result = classifier(p);
+        result = classifier(p(1), p(2));
         if result == 1
             hits = hits + 1;
         end
