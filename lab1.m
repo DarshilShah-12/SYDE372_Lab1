@@ -1,6 +1,6 @@
 clear
-% clf(figure(1))
-% clf(figure(2))
+clf(figure(1))
+clf(figure(2))
 clf(figure(3))
 
 mean_arg = [5; 10];
@@ -26,35 +26,35 @@ Cont_C = std_cont([5; 10], [8, 4; 4, 40;]);
 Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
-% figure(1)
-% % axis equal
-% title("Classes A and B");
-% hold on
-% scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-% plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
-% scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-% plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
-% boundary(@MED1, [-15, 0], [35, 30], '-');
-% boundary(@gemClassAB, [-15, 0], [35, 30], ':');
-% boundary(@map1, [-15, 0], [35, 30], '--');
-% legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
-% hold off
+figure(1)
+axis equal
+title("Classes A and B");
+hold on
+scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
+plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
+scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
+boundary(@MED1, [-15, 0], [35, 30], '-');
+boundary(@gemClassAB, [-15, 0], [35, 30], ':');
+boundary(@map1, [-15, 0], [35, 30], '--');
+legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
+hold off
 
-% figure(2)
-% % axis equal
-% title("Classes C, D, and E");
-% hold on
-% scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
-% plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
-% scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
-% plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
-% scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
-% plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
-% boundary(@MED2, [-25, -80], [45, 120], '-');
-% boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
-% boundary(@map2, [-25, -80], [45, 120], '--');
-% legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
-% hold off
+figure(2)
+% axis equal
+title("Classes C, D, and E");
+hold on
+scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
+plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
+scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
+plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
+scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
+plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
+boundary(@MED2, [-25, -80], [45, 120], '-');
+boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
+boundary(@map2, [-25, -80], [45, 120], '--');
+legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
+hold off
 
 figure(3)
 % axis equal
@@ -73,19 +73,19 @@ hold off
 % dcm(Class_E, @map2, 5);
 
 dcm(Class_A_test, Class_B, @MED1);
-dcm2(Class_C, Class_D, Class_E, @map2);
+dcm2(Class_C, Class_D, Class_E, @MED2);
 
 dcm(Class_A_test, Class_B, @gemClassAB);
 dcm2(Class_C, Class_D, Class_E, @gemClassCDE);
 
-dcm(Class_A_test, Class_B, @MED1);
+dcm(Class_A_test, Class_B, @map1);
 dcm2(Class_C, Class_D, Class_E, @map2);
 
-dcm(Class_A_test, Class_B, @gemClassAB);
-dcm2(Class_C, Class_D, Class_E, @gemClassCDE);
+dcm(Class_A_test, Class_B, @K5NN_AB);
+dcm2(Class_C_test, Class_D, Class_E, @K5NN_CDE);
 
-dcm(Class_A, Class_B, @map1);
-dcm2(Class_C, Class_D, Class_E, @map2);
+dcm(Class_A_test, Class_B, @NN_AB);
+dcm2(Class_C_test, Class_D, Class_E, @NN_CDE);
 
 med1 = classify(@MED1, Class_A);
 med1Err = errorRate(med1, length(Class_A(1,:)));
@@ -101,16 +101,16 @@ MAP2 = classify(@map2, Class_C);
 MAP2Err = errorRate(MAP2, length(Class_C(1,:)));
 N1 = NNclassify(@NN_AB, Class_A_test);
 N1Err = errorRate(N1, length(Class_A_test(1,:)));
+testing = NNclassify(@NN_AB, Class_A);
+testing2 = errorRate(testing, length(Class_A(1,:)));
+testing3 = NNclassify(@NN_AB, Class_A);
+testing4 = errorRate(testing3, length(Class_A(1,:)));
 N2 = NNclassify(@NN_CDE, Class_C_test);
 N2Err = errorRate(N2, length(Class_C_test(1,:)));
 K1 = NNclassify(@K5NN_AB, Class_A_test);
 K1Err = errorRate(K1, length(Class_A_test(1,:)));
-
-disp('NN for multiclass error rate:')
-disp(N2Err)
-
-% disp(K2Err)
-
+K2 = NNclassify(@K5NN_CDE, Class_A_test);
+K2Err = errorRate(K2, length(Class_C_test(1,:)));
 
 function Class = data(n, u, cov)
    [V, D] = eig(cov);
@@ -447,8 +447,7 @@ end
 function hits = NNclassify(classifier, data)
     hits = 0;
     for i = 1:length(data(1,:))
-        p = [data(1,i); data(2,i)];
-        result = classifier(p(1), p(2));
+        result = classifier(data(1,i), data(2,i));
         if result == 1
             hits = hits + 1;
         end
