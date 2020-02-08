@@ -1,6 +1,6 @@
 clear
-% clf(figure(1))
-% clf(figure(2))
+clf(figure(1))
+clf(figure(2))
 
 mean_arg = [5; 10];
 variance_arg = [8 0; 0, 4];
@@ -19,15 +19,24 @@ Cont_C = std_cont([5; 10], [8, 4; 4, 40;]);
 Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
-% figure(1)
-% hold on
-% scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-% plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
-% scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-% plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
-% hold off
-% 
+figure(1)
+% axis equal
+title("Classes A and B");
+hold on
+scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
+plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
+scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
+boundary(@MED1, [-15, 0], [35, 30], '-');
+boundary(@gemClassAB, [-15, 0], [35, 30], ':');
+boundary(@map1, [-15, 0], [35, 30], '--');
+plot([5; 10], [10; 15]);
+legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
+hold off
+
 figure(2)
+% axis equal
+title("Classes C, D, and E");
 hold on
 scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
 plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
@@ -35,23 +44,12 @@ scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
 plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
 scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
 plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
+boundary(@MED2, [-25, -80], [45, 120], '-');
+boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
+boundary(@map2, [-25, -80], [45, 120], '--');
+legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
 hold off
 
-figure(3)
-hold on
-scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-boundary(@map1, [-15, 0], [35, 30]);
-boundary(@MED1, [-15, 0], [35, 30]);
-hold off
-
-figure(4)
-hold on
-scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
-scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
-scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
-boundary(@map2, [-25, -80], [45, 120]);
-hold off
 
 dcm(Class_A, @map1, 1);
 dcm(Class_B, @map1, 2);
@@ -59,7 +57,15 @@ dcm(Class_C, @map2, 3);
 dcm(Class_D, @map2, 4);
 dcm(Class_E, @map2, 5);
 
+dcm(Class_A_test, Class_B, @MED1);
+dcm2(Class_C, Class_D, Class_E, @map2);
+
+dcm(Class_A_test, Class_B, @gemClassAB);
+dcm2(Class_C, Class_D, Class_E, @gemClassCDE);
+
 dcm(Class_A, Class_B, @map1);
+dcm2(Class_C, Class_D, Class_E, @map2);
+
 med1 = classify(@MED1, Class_A);
 med1Err = errorRate(med1, length(Class_A(1,:)));
 med2 = classify(@MED2, Class_C);
@@ -85,15 +91,17 @@ disp(N2Err)
 % disp(K2Err)
 
 function Class = data(n, u, cov)
+   [V, D] = eig(cov);
    x = randn(2, n);
-   x = cov * x;
+   x = V * sqrt(D) * x;
    Class = bsxfun(@plus, x, u);
 end
 
 function contour = std_cont(u, cov)
+    [V, D] = eig(cov);
     x = linspace(0, 2 * pi);
     unit_centered_contour = [cos(x); sin(x)];
-    centered_contour = cov * unit_centered_contour;
+    centered_contour = V * sqrt(D) * unit_centered_contour;
     contour = bsxfun(@plus, centered_contour, u);
 end
 
@@ -313,6 +321,7 @@ function eucDi = euclidDist(p1,p2)
 end
 
 %%NN
+
 function ab = NN_AB(p1)
     [ab,~] = KNN(1,p1);
 end
@@ -327,8 +336,10 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
     expected_values_for_b = ones(1, 200)*2;
     
     all_expected_values = [expected_values_for_a, expected_values_for_b];
+
     
-    disp(all_expected_values);
+
+%     disp(all_expected_values);
     all_predicted_values = zeros(1, 400);
     for i=1:size(class_a, 2)
         all_predicted_values(i) = classifier(class_a(1, i), class_a(2, i));
@@ -352,14 +363,52 @@ function developConfusionMatrix = dcm(class_a, class_b, classifier)
 %     developConfusionMatrix = correct_count;
 end
 
+function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
+    
+    expected_values_for_c = ones(1, 100)*3;
+    expected_values_for_d = ones(1, 200)*4;
+    expected_values_for_e = ones(1, 150)*5;
+    
+    all_expected_values = [expected_values_for_c, expected_values_for_d, expected_values_for_e];
+    
+%     disp(all_expected_values);
+    all_predicted_values = zeros(1, 450);
+    for i=1:size(class_c, 2)
+        all_predicted_values(i) = classifier(class_c(1, i), class_c(2, i));
+    end
+    
+    for i=1:size(class_d, 2)
+        all_predicted_values(100 + i) = classifier(class_d(1, i), class_d(2, i));
+    end
+    
+    for i=1:size(class_e, 2)
+        all_predicted_values(300 + i) = classifier(class_e(1, i), class_e(2, i));
+    end
+    
+    C = confusionmat(all_expected_values, all_predicted_values);
+    
+    C( all(~C,2), : ) = [];
+    C( :, all(~C, 1)) = [];
+    disp(C);
+    
+%     correct_count = 0;
+%     for i=1:size(class, 2)
+%         if(classifier(class(1, i), class(2, i)) == expected_value)
+%             correct_count = correct_count + 1;
+%         end
+%     end
+%     disp(correct_count);
+%     developConfusionMatrix = correct_count;
+end
 
-function output = boundary(classifier, start, finish)
+function output = boundary(classifier, start, finish, style)
     x = linspace(start(1), finish(1), 500);
     y = linspace(start(2), finish(2), 500);
     [X, Y] = meshgrid(x,y);
     A = arrayfun(classifier, X, Y);
-    contour(X, Y, A, 1.5);
+    contour(X, Y, A, [1, 2, 3, 4, 5], ['k', style]);
 end
+
 
 function hits = classify(classifier, data)
     hits = 0;
