@@ -51,15 +51,15 @@ hold off
 function Class = data(n, u, cov)
    [V, D] = eig(cov);
    x = randn(2, n);
-   x = V * sqrt(D) * x;
+   x = transpose(V) * sqrt(D) * x;
    Class = bsxfun(@plus, x, u);
 end
 
 function contour = std_cont(u, cov)
     [V, D] = eig(cov);
     x = linspace(0, 2 * pi);
-    unit_centered_contour = 3 * [cos(x); sin(x)];
-    centered_contour = V * sqrt(D) * unit_centered_contour;
+    unit_centered_contour = [cos(x); sin(x)];
+    centered_contour = transpose(V) * sqrt(D) * unit_centered_contour;
     contour = bsxfun(@plus, centered_contour, u);
 end
 
