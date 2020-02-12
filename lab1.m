@@ -18,10 +18,13 @@ global Class_E
 Class_A = data(200, [5; 10], [8, 0; 0, 4]);
 Class_A_test = data(200, [5; 10], [8, 0; 0, 4]);
 Class_B = data(200, [10; 15], [8, 0; 0, 4]);
+Class_B_test = data(200, [10; 15], [8, 0; 0, 4]);
 Class_C = data(100, [5; 10], [8, 4; 4, 40]);
 Class_C_test = data(200, [5; 10], [8, 4; 4, 40]);
 Class_D = data(200, [15; 10], [8, 0; 0, 8]);
+Class_D_test = data(200, [15; 10], [8, 0; 0, 8]);
 Class_E = data(150, [10; 5], [10, -5; -5, 20]);
+Class_E_test = data(150, [10; 5], [10, -5; -5, 20]);
 
 Cont_A = std_cont([5; 10], [8, 0; 0, 4]);
 Cont_B = std_cont([10; 15], [8, 0; 0, 4]);
@@ -29,39 +32,39 @@ Cont_C = std_cont([5; 10], [8, 4; 4, 40;]);
 Cont_D = std_cont([15; 10], [8, 0; 0, 8]);
 Cont_E = std_cont([10; 5], [10, -5; -5, 20]);
 
-% figure(1)
+figure(1)
+axis equal
+title("Classes A and B");
+hold on
+scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
+plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
+scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
+plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
+boundary(@MED1, [-15, 0], [35, 30], '-');
+boundary(@gemClassAB, [-15, 0], [35, 30], ':');
+boundary(@map1, [-15, 0], [35, 30], '--');
+legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
+xlabel('x1')
+ylabel('x2')
+hold off
+
+figure(2)
 % axis equal
-% title("Classes A and B");
-% hold on
-% scatter(Class_A(1, :), Class_A(2, :),'x', 'red');
-% plot(Cont_A(1, :), Cont_A(2, :), 'red', 'LineWidth', 2);
-% scatter(Class_B(1, :), Class_B(2, :), 'x', 'blue');
-% plot(Cont_B(1, :), Cont_B(2, :), 'blue', 'LineWidth', 2);
-% boundary(@MED1, [-15, 0], [35, 30], '-');
-% boundary(@gemClassAB, [-15, 0], [35, 30], ':');
-% boundary(@map1, [-15, 0], [35, 30], '--');
-% legend('A', 'A', 'B', 'B', 'MED', 'GEM', 'MAP');
-% xlabel('x1')
-% ylabel('x2')
-% hold off
-% 
-% figure(2)
-% % axis equal
-% title("Classes C, D, and E");
-% hold on
-% scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
-% plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
-% scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
-% plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
-% scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
-% plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
-% boundary(@MED2, [-25, -80], [45, 120], '-');
-% boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
-% boundary(@map2, [-25, -80], [45, 120], '--');
-% legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
-% xlabel('x1')
-% ylabel('x2')
-% hold off
+title("Classes C, D, and E");
+hold on
+scatter(Class_C(1, :), Class_C(2, :), 'x', 'red');
+plot(Cont_C(1, :), Cont_C(2, :), 'red', 'LineWidth', 2);
+scatter(Class_D(1, :), Class_D(2, :), 'x', 'blue');
+plot(Cont_D(1, :), Cont_D(2, :), 'blue', 'LineWidth', 2);
+scatter(Class_E(1, :), Class_E(2, :), 'x', 'green');
+plot(Cont_E(1, :), Cont_E(2, :), 'green', 'LineWidth', 2);
+boundary(@MED2, [-25, -80], [45, 120], '-');
+boundary(@gemClassCDE, [-25, -80], [45, 120], ':');
+boundary(@map2, [-25, -80], [45, 120], '--');
+legend('A', 'A', 'B', 'B', 'C', 'C', 'MED', 'GEM', 'MAP');
+xlabel('x1')
+ylabel('x2')
+hold off
 
 figure(3)
 % axis equal
@@ -121,11 +124,11 @@ dcm2(Class_C, Class_D, Class_E, @gemClassCDE);
 dcm(Class_A_test, Class_B, @map1);
 dcm2(Class_C, Class_D, Class_E, @map2);
 
-dcm(Class_A_test, Class_B, @K5NN_AB);
-dcm2(Class_C_test, Class_D, Class_E, @K5NN_CDE);
+dcm(Class_A_test, Class_B_test, @K5NN_AB);
+dcm2(Class_C_test, Class_D_test, Class_E_test, @K5NN_CDE);
 
-dcm(Class_A_test, Class_B, @NN_AB);
-dcm2(Class_C_test, Class_D, Class_E, @NN_CDE);
+dcm(Class_A_test, Class_B_test, @NN_AB);
+dcm2(Class_C_test, Class_D_test, Class_E_test, @NN_CDE);
 
 med1 = classify(@MED1, Class_A);
 med1Err = errorRate("MED", "1", med1, length(Class_A(1,:)));
@@ -285,8 +288,8 @@ function MAP_classifier_case_1 = map1(x1, x2)
 
     x = [x1; x2];
     
-    p_x_given_a_and_p_a = ((1/(sqrt(2*pi)*sqrt(det(sigma_a))))*exp((-1/2)*(transpose(x-mu_a)*inv(sigma_a))*(x-mu_a)))*200;
-    p_x_given_b_and_p_b = ((1/(sqrt(2*pi)*sqrt(det(sigma_b))))*exp((-1/2)*(transpose(x-mu_b)*inv(sigma_b))*(x-mu_b)))*200;
+    p_x_given_a_and_p_a = ((1/(sqrt(2*pi)*sqrt(det(sigma_a))))*exp((-1/2)*(transpose(x-mu_a)*inv(sigma_a))*(x-mu_a)))*(200/400);
+    p_x_given_b_and_p_b = ((1/(sqrt(2*pi)*sqrt(det(sigma_b))))*exp((-1/2)*(transpose(x-mu_b)*inv(sigma_b))*(x-mu_b)))*(200/400);
     
     if(p_x_given_a_and_p_a >= p_x_given_b_and_p_b)
         MAP_classifier_case_1 = 1;
@@ -307,9 +310,9 @@ function MAP_classifier_case_2 = map2(x1, x2)
     
     x = [x1; x2];
     
-    p_x_given_c = ((1/(sqrt(2*pi)*sqrt(det(sigma_c))))*exp((-1/2)*(transpose(x-mu_c)*inv(sigma_c))*(x-mu_c)))*100;
-    p_x_given_d = ((1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d)))*200;
-    p_x_given_e = ((1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e)))*150;
+    p_x_given_c = ((1/(sqrt(2*pi)*sqrt(det(sigma_c))))*exp((-1/2)*(transpose(x-mu_c)*inv(sigma_c))*(x-mu_c)))*(100/450);
+    p_x_given_d = ((1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d)))*(200/450);
+    p_x_given_e = ((1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e)))*(150/450);
     
     if((p_x_given_c >= p_x_given_d) && (p_x_given_c >= p_x_given_e))
         MAP_classifier_case_2 = 1;
@@ -417,9 +420,9 @@ end
 
 function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
     
-    expected_values_for_c = ones(1, 100)*3;
-    expected_values_for_d = ones(1, 200)*4;
-    expected_values_for_e = ones(1, 150)*5;
+    expected_values_for_c = ones(1, 100)*1;
+    expected_values_for_d = ones(1, 200)*2;
+    expected_values_for_e = ones(1, 150)*3;
     
     all_expected_values = [expected_values_for_c, expected_values_for_d, expected_values_for_e];
     
@@ -438,15 +441,15 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
     
     C = confusionmat(all_expected_values, all_predicted_values);
     
-    C( all(~C,2), : ) = [];
-    C( :, all(~C, 1)) = [];
+%     C( all(~C,2), : ) = [];
+%     C( :, all(~C, 1)) = [];
     fprintf('Confusion matrix for classifier %s is \n', func2str(classifier));
     disp(C);
 end
 
 function boundary(classifier, start, finish, style)
-    x = linspace(start(1), finish(1), 1000);
-    y = linspace(start(2), finish(2), 1000);
+    x = linspace(start(1), finish(1), 100);
+    y = linspace(start(2), finish(2), 100);
     [X, Y] = meshgrid(x,y);
     A = arrayfun(classifier, X, Y);
     contour(X, Y, A, [1, 2, 3],['k', style]);
