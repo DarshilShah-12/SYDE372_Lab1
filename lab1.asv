@@ -425,10 +425,10 @@ function confusionMatrix2 = dcm2(class_c, class_d, class_e, classifier)
 end
 
 function boundary(classifier, start, finish, style)
-    x = linspace(start(1), finish(1), 1000);
-    y = linspace(start(2), finish(2), 1000);
-    [X, Y] = meshgrid(x,y);
-    A = arrayfun(classifier, X, Y);
-    contour(X, Y, A, [1, 2, 3],['k', style]);
+%     x = linspace(start(1), finish(1), 1000);
+%     y = linspace(start(2), finish(2), 1000);
+%     [X, Y] = meshgrid(x,y);
+%     A = arrayfun(classifier, X, Y);
+%     contour(X, Y, A, [1, 2, 3],['k', style]);
 end
 
