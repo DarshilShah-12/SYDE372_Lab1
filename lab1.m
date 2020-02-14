@@ -265,8 +265,8 @@ function MAP_classifier_case_1 = map1(x1, x2)
 
     x = [x1; x2];
     
-    p_x_given_a_and_p_a = ((1/(sqrt(2*pi)*sqrt(det(sigma_a))))*exp((-1/2)*(transpose(x-mu_a)*inv(sigma_a))*(x-mu_a)))*(200/400);
-    p_x_given_b_and_p_b = ((1/(sqrt(2*pi)*sqrt(det(sigma_b))))*exp((-1/2)*(transpose(x-mu_b)*inv(sigma_b))*(x-mu_b)))*(200/400);
+    p_x_given_a_and_p_a = ((1/((2*pi)*sqrt(det(sigma_a))))*exp((-1/2)*(transpose(x-mu_a)*inv(sigma_a))*(x-mu_a)))*(200/400);
+    p_x_given_b_and_p_b = ((1/((2*pi)*sqrt(det(sigma_b))))*exp((-1/2)*(transpose(x-mu_b)*inv(sigma_b))*(x-mu_b)))*(200/400);
     
     if(p_x_given_a_and_p_a >= p_x_given_b_and_p_b)
         MAP_classifier_case_1 = 1;
@@ -287,9 +287,9 @@ function MAP_classifier_case_2 = map2(x1, x2)
     
     x = [x1; x2];
     
-    p_x_given_c = ((1/(sqrt(2*pi)*sqrt(det(sigma_c))))*exp((-1/2)*(transpose(x-mu_c)*inv(sigma_c))*(x-mu_c)))*(100/450);
-    p_x_given_d = ((1/(sqrt(2*pi)*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d)))*(200/450);
-    p_x_given_e = ((1/(sqrt(2*pi)*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e)))*(150/450);
+    p_x_given_c = ((1/(((2*pi)^(3/2))*sqrt(det(sigma_c))))*exp((-1/2)*(transpose(x-mu_c)*inv(sigma_c))*(x-mu_c)))*(100/450);
+    p_x_given_d = ((1/(((2*pi)^(3/2))*sqrt(det(sigma_d))))*exp((-1/2)*(transpose(x-mu_d)*inv(sigma_d))*(x-mu_d)))*(200/450);
+    p_x_given_e = ((1/(((2*pi)^(3/2))*sqrt(det(sigma_e))))*exp((-1/2)*(transpose(x-mu_e)*inv(sigma_e))*(x-mu_e)))*(150/450);
     
     if((p_x_given_c >= p_x_given_d) && (p_x_given_c >= p_x_given_e))
         MAP_classifier_case_2 = 1;
